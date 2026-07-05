@@ -1,0 +1,3 @@
+/* Categories reuses .category-grid from CategoryGrid.css — no page-specific
+   overrides needed yet. Kept as its own file so future page-only tweaks
+   (e.g. a category description banner) have a natural home. */

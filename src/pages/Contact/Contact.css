@@ -1,0 +1,21 @@
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.contact-details h3 {
+  font-size: 14px;
+  margin-top: 24px;
+}
+
+.contact-details h3:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+}

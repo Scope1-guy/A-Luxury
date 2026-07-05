@@ -1,0 +1,79 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.product-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+
+.product-card:hover .product-card-media img {
+  transform: scale(1.04);
+}
+
+/* Signature detail: a small folded corner in the top-left of every card,
+   echoing the logo mark and tying the grid together visually. */
+.card-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  opacity: 0.9;
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.wishlist-toggle {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(247, 245, 240, 0.9);
+  font-size: 17px;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s var(--ease);
+}
+
+.wishlist-toggle:hover {
+  transform: scale(1.08);
+}
+
+.wishlist-toggle.active {
+  color: var(--color-error);
+}
+
+.product-card-body {
+  padding-top: 14px;
+}
+
+.product-card-body h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.product-card-price {
+  margin: 0;
+  font-size: 14px;
+}

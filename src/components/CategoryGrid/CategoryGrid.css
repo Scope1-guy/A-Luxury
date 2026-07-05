@@ -1,0 +1,45 @@
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.category-tile {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.category-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+
+.category-tile:hover img {
+  transform: scale(1.05);
+}
+
+.category-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(27, 27, 24, 0.75), transparent 60%);
+}
+
+.category-tile-overlay h3 {
+  color: var(--color-white);
+  margin-bottom: 4px;
+}
+
+.category-tile-overlay p {
+  color: #e6e4dc;
+  font-size: 13px;
+  margin: 0;
+}

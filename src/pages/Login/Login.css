@@ -1,0 +1,21 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+}
+
+.auth-card h1 {
+  margin-bottom: 24px;
+}
+
+.auth-card .form-note a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}

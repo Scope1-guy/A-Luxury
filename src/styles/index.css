@@ -1,0 +1,280 @@
+/* ==========================================================================
+   FOLD — global design tokens & base styles
+   Signature element: the "fold mark" — a small folded-corner triangle
+   (see .fold-mark below) that recurs on cards, the logo, and dividers.
+   ========================================================================== */
+
+:root {
+  /* Color palette */
+  --color-bg: #f7f5f0;          /* warm paper white — page background */
+  --color-bg-alt: #efebe2;      /* deeper sand — alternating sections */
+  --color-ink: #1b1b18;         /* near-black charcoal — headings */
+  --color-ink-soft: #55534c;    /* muted warm grey — body copy */
+  --color-accent: #3b5d50;      /* deep forest green — the FOLD accent */
+  --color-accent-soft: #e7eee9; /* pale green tint — badges, hovers */
+  --color-line: #ddd7c9;        /* hairline rule color */
+  --color-error: #a63d2f;       /* rust red — sale tags, errors */
+  --color-white: #ffffff;
+
+  /* Type */
+  --font-display: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+
+  /* Layout */
+  --max-width: 1280px;
+  --radius: 2px; /* FOLD keeps corners almost square — a considered, tailored feel */
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 1em;
+  color: var(--color-ink-soft);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Visible keyboard focus — accessibility floor, never suppressed */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* --- Shared layout utilities ------------------------------------------- */
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 72px 0;
+}
+
+.section-alt {
+  background: var(--color-bg-alt);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+/* --- Buttons -------------------------------------------------------------
+   Two variants only: primary (filled ink) and ghost (outlined). Keeping the
+   set small is deliberate — a premium brand doesn't need five button styles. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-white);
+}
+.btn-primary:hover {
+  background: var(--color-accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  background: var(--color-ink);
+  color: var(--color-white);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* --- Fold mark -----------------------------------------------------------
+   A folded paper/fabric corner. Used as the logo mark and, smaller, as a
+   recurring corner-crease detail on cards and dividers throughout the site. */
+
+.fold-mark {
+  position: relative;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  background: var(--color-accent);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+/* --- Forms ---------------------------------------------------------------
+   Shared field styling reused by Login, Register, Contact, Profile. */
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--color-ink);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  transition: border-color 0.2s var(--ease);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.field-error {
+  color: var(--color-error);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.form-note {
+  font-size: 13px;
+  color: var(--color-ink-soft);
+  margin-top: 20px;
+}
+
+/* --- Misc ------------------------------------------------------------- */
+
+.price {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.price-strike {
+  text-decoration: line-through;
+  color: var(--color-ink-soft);
+  font-weight: 400;
+  margin-right: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  border-radius: var(--radius);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.badge-sale {
+  background: #f3e3df;
+  color: var(--color-error);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 96px 24px;
+}
+
+.empty-state h2 {
+  margin-bottom: 8px;
+}

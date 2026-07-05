@@ -1,0 +1,19 @@
+.profile-card {
+  max-width: 480px;
+  padding: 24px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 14px;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
