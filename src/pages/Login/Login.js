@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import './Login.css';
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import "./Login.css";
 
 function Login() {
   const { login } = useAuth();
@@ -9,17 +9,20 @@ function Login() {
   const location = useLocation();
   // ProtectedRoute stashes the page the user was trying to reach in
   // location.state.from — send them back there after a successful login.
-  const redirectTo = location.state?.from?.pathname || '/profile';
+  const redirectTo = location.state?.from?.pathname || "/profile";
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  // const from = location.state?.from?.pathname || "/";
+  // navigate(from, { replace: true });
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
-    setError('');
+    setError("");
     const result = await login(email, password);
     setSubmitting(false);
     if (result.success) {
@@ -59,8 +62,12 @@ function Login() {
 
           {error && <p className="field-error">{error}</p>}
 
-          <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-            {submitting ? 'Logging in…' : 'Login'}
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={submitting}
+          >
+            {submitting ? "Logging in…" : "Login"}
           </button>
         </form>
 

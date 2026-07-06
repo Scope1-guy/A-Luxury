@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import VariantSelector from '../../components/VariantSelector/VariantSelector';
-import QuantitySelector from '../../components/QuantitySelector/QuantitySelector';
-import ProductCard from '../../components/ProductCard/ProductCard';
-import { useCart } from '../../context/CartContext';
-import { useWishlist } from '../../context/WishlistContext';
-import { getProductById, getRelatedProducts } from '../../services/productService';
-import './ProductDetails.css';
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import VariantSelector from "../../components/VariantSelector/VariantSelector";
+import QuantitySelector from "../../components/QuantitySelector/QuantitySelector";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
+import {
+  getProductById,
+  getRelatedProducts,
+} from "../../services/productService";
+import "./ProductDetails.css";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ProductDetails() {
   // useParams reads the dynamic segment from the route path "/product/:id".
   const { id } = useParams();
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -47,9 +56,17 @@ function ProductDetails() {
   }
 
   const wishlisted = isWishlisted(product.id);
-  const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
+  const onSale =
+    product.compareAtPrice && product.compareAtPrice > product.price;
 
   function handleAddToCart() {
+    if (!user) {
+      navigate("/login", {
+        state: { from: location },
+      });
+      return;
+    }
+
     addToCart(product, { size, color, quantity });
     setJustAdded(true);
   }
@@ -65,7 +82,7 @@ function ProductDetails() {
             {product.images.map((img, index) => (
               <button
                 key={img}
-                className={`pd-thumb ${activeImage === index ? 'active' : ''}`}
+                className={`pd-thumb ${activeImage === index ? "active" : ""}`}
                 onClick={() => setActiveImage(index)}
                 aria-label={`Show image ${index + 1}`}
               >
@@ -80,33 +97,50 @@ function ProductDetails() {
         <span className="eyebrow">{product.category}</span>
         <h1>{product.name}</h1>
         <p className="pd-price">
-          {onSale && <span className="price-strike">${product.compareAtPrice}</span>}
+          {onSale && (
+            <span className="price-strike">${product.compareAtPrice}</span>
+          )}
           <span className="price">${product.price}</span>
         </p>
         <p className="pd-description">{product.description}</p>
 
-        <VariantSelector label="Size" options={product.sizes} selected={size} onSelect={setSize} />
-        <VariantSelector label="Color" options={product.colors} selected={color} onSelect={setColor} />
+        <VariantSelector
+          label="Size"
+          options={product.sizes}
+          selected={size}
+          onSelect={setSize}
+        />
+        <VariantSelector
+          label="Color"
+          options={product.colors}
+          selected={color}
+          onSelect={setColor}
+        />
 
         <div className="pd-quantity-row">
           <span className="variant-label">Quantity</span>
           <QuantitySelector
             quantity={quantity}
-            onIncrease={() => setQuantity((q) => Math.min(q + 1, product.stock))}
+            onIncrease={() =>
+              setQuantity((q) => Math.min(q + 1, product.stock))
+            }
             onDecrease={() => setQuantity((q) => Math.max(q - 1, 1))}
             max={product.stock}
           />
         </div>
 
         <div className="pd-actions">
-          <button className="btn btn-primary btn-block" onClick={handleAddToCart}>
+          <button
+            className="btn btn-primary btn-block"
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </button>
           <button
-            className={`btn btn-ghost btn-block ${wishlisted ? 'active' : ''}`}
+            className={`btn btn-ghost btn-block ${wishlisted ? "active" : ""}`}
             onClick={() => toggleWishlist(product)}
           >
-            {wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            {wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
           </button>
         </div>
 

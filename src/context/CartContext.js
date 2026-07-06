@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from "react";
+// import { useAuth } from "./AuthContext";
+// import { useNavigate, useLocation } from "react-router-dom";
 
 const CartContext = createContext(null);
 
@@ -10,6 +12,7 @@ function lineKey(productId, size, color) {
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]); // [{ key, product, size, color, quantity }]
+  // const { user } = useAuth();
 
   function addToCart(product, { size, color, quantity = 1 }) {
     const key = lineKey(product.id, size, color);
@@ -17,24 +20,52 @@ export function CartProvider({ children }) {
       const existing = prev.find((item) => item.key === key);
       if (existing) {
         return prev.map((item) =>
-          item.key === key ? { ...item, quantity: item.quantity + quantity } : item
+          item.key === key
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       }
       return [...prev, { key, product, size, color, quantity }];
     });
   }
 
+  // function addToCart(product, { size, color, quantity = 1 }) {
+  //   if (!user) {
+  //     navigate('/login', {
+  //       state: {from: location}
+  //     });
+  //     return
+  //   }
+  //   const key = lineKey(product.id, size, color);
+  //   setItems((prev) => {
+  //     const existing = prev.find((item) => item.key === key);
+  //     if (existing) {
+  //       return prev.map((item) =>
+  //         item.key === key
+  //           ? { ...item, quantity: item.quantity + quantity }
+  //           : item
+  //       );
+  //     }
+  //     return [...prev, { key, product, size, color, quantity }];
+  //   });
+  // }
+
   function increaseQuantity(key) {
     setItems((prev) =>
-      prev.map((item) => (item.key === key ? { ...item, quantity: item.quantity + 1 } : item))
+      prev.map((item) =>
+        item.key === key ? { ...item, quantity: item.quantity + 1 } : item
+      )
     );
   }
 
   function decreaseQuantity(key) {
-    setItems((prev) =>
-      prev
-        .map((item) => (item.key === key ? { ...item, quantity: item.quantity - 1 } : item))
-        .filter((item) => item.quantity > 0) // dropping to 0 removes the line
+    setItems(
+      (prev) =>
+        prev
+          .map((item) =>
+            item.key === key ? { ...item, quantity: item.quantity - 1 } : item
+          )
+          .filter((item) => item.quantity > 0) // dropping to 0 removes the line
     );
   }
 
@@ -48,7 +79,10 @@ export function CartProvider({ children }) {
 
   // useMemo avoids recalculating totals on every render — only when items change.
   const { subtotal, itemCount } = useMemo(() => {
-    const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const subtotal = items.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     return { subtotal, itemCount };
   }, [items]);
@@ -70,7 +104,7 @@ export function CartProvider({ children }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error("useCart must be used within a CartProvider");
   }
   return context;
 }

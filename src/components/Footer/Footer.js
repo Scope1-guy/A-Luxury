@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
+import { useAuth } from "../../context/AuthContext";
 
 function Footer() {
+  const { user } = useAuth();
   return (
     <footer className="footer">
       <div className="container footer-inner">
@@ -44,15 +46,9 @@ function Footer() {
         <div className="footer-col">
           <h4>Account</h4>
           <ul>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
+            <li>{!user && <Link to="/login">Login</Link>}</li>
+            <li>{!user && <Link to="/register">Register</Link>}</li>
+            <li>{user && <Link to="/profile">Profile</Link>}</li>
           </ul>
         </div>
       </div>

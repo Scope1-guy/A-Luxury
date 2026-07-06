@@ -4,11 +4,11 @@
 // authService.js is the only file that should read/write this array.
 let fakeUsers = [
   {
-    id: 'u1',
-    firstName: 'Alex',
-    lastName: 'Rivera',
-    email: 'alex@example.com',
-    password: 'password123', // Plain text on purpose — this is fake, local-only auth.
+    id: "u1",
+    firstName: "Samuel",
+    lastName: "Scope",
+    email: "ghost@scope.com",
+    password: "Ayanfe123", // Plain text on purpose — this is fake, local-only auth.
   },
 ];
 
