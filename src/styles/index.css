@@ -6,19 +6,19 @@
 
 :root {
   /* Color palette */
-  --color-bg: #f7f5f0;          /* warm paper white — page background */
-  --color-bg-alt: #efebe2;      /* deeper sand — alternating sections */
-  --color-ink: #1b1b18;         /* near-black charcoal — headings */
-  --color-ink-soft: #55534c;    /* muted warm grey — body copy */
-  --color-accent: #3b5d50;      /* deep forest green — the FOLD accent */
+  --color-bg: #f7f5f0; /* warm paper white — page background */
+  --color-bg-alt: #efebe2; /* deeper sand — alternating sections */
+  --color-ink: #1b1b18; /* near-black charcoal — headings */
+  --color-ink-soft: #55534c; /* muted warm grey — body copy */
+  --color-accent: #3b5d50; /* deep forest green — the FOLD accent */
   --color-accent-soft: #e7eee9; /* pale green tint — badges, hovers */
-  --color-line: #ddd7c9;        /* hairline rule color */
-  --color-error: #a63d2f;       /* rust red — sale tags, errors */
+  --color-line: #ddd7c9; /* hairline rule color */
+  --color-error: #a63d2f; /* rust red — sale tags, errors */
   --color-white: #ffffff;
 
   /* Type */
-  --font-display: 'Space Grotesk', 'Helvetica Neue', sans-serif;
-  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+  --font-display: "Space Grotesk", "Helvetica Neue", sans-serif;
+  --font-body: "Inter", "Helvetica Neue", sans-serif;
 
   /* Layout */
   --max-width: 1280px;
@@ -38,7 +38,7 @@ html {
 
 body {
   margin: 0;
-padding: 5px
+  padding: 5px;
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -47,7 +47,10 @@ padding: 5px
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
   font-weight: 600;
   color: var(--color-ink);
@@ -149,7 +152,8 @@ textarea:focus-visible {
   letter-spacing: 0.02em;
   border-radius: var(--radius);
   border: 1px solid transparent;
-  transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
   white-space: nowrap;
 }
 
