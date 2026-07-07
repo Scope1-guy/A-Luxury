@@ -29,27 +29,6 @@ export function CartProvider({ children }) {
     });
   }
 
-  // function addToCart(product, { size, color, quantity = 1 }) {
-  //   if (!user) {
-  //     navigate('/login', {
-  //       state: {from: location}
-  //     });
-  //     return
-  //   }
-  //   const key = lineKey(product.id, size, color);
-  //   setItems((prev) => {
-  //     const existing = prev.find((item) => item.key === key);
-  //     if (existing) {
-  //       return prev.map((item) =>
-  //         item.key === key
-  //           ? { ...item, quantity: item.quantity + quantity }
-  //           : item
-  //       );
-  //     }
-  //     return [...prev, { key, product, size, color, quantity }];
-  //   });
-  // }
-
   function increaseQuantity(key) {
     setItems((prev) =>
       prev.map((item) =>

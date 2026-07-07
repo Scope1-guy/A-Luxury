@@ -120,6 +120,6 @@
 
 @media (max-width: 500px) {
   .icon-link {
-    display: none;
+    /* display: none; */
   }
 }

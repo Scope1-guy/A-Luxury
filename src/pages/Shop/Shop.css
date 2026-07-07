@@ -3,6 +3,7 @@
   grid-template-columns: 240px 1fr;
   gap: 40px;
   align-items: start;
+  padding: 10px;
 }
 
 .shop-filters {
@@ -23,7 +24,7 @@
   margin-bottom: 8px;
 }
 
-.filter-group input[type='text'],
+.filter-group input[type="text"],
 .filter-group select {
   width: 100%;
   padding: 10px 12px;
@@ -33,7 +34,7 @@
   font-size: 14px;
 }
 
-.filter-group input[type='range'] {
+.filter-group input[type="range"] {
   width: 100%;
 }
 
