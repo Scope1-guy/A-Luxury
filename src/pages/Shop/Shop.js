@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import ProductCard from '../../components/ProductCard/ProductCard';
-import Pagination from '../../components/Pagination/Pagination';
-import categories from '../../data/categories';
-import { getAllProducts } from '../../services/productService';
-import './Shop.css';
+import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import Pagination from "../../components/Pagination/Pagination";
+import categories from "../../data/categories";
+import { getAllProducts } from "../../services/productService";
+import "./Shop.css";
 
 const PAGE_SIZE = 8;
 const PRICE_MAX = 350;
@@ -16,10 +16,12 @@ function Shop() {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState(searchParams.get('category') || 'all');
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState(
+    searchParams.get("category") || "all"
+  );
   const [maxPrice, setMaxPrice] = useState(PRICE_MAX);
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState("featured");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -34,11 +36,14 @@ function Shop() {
   const filteredProducts = useMemo(() => {
     let result = allProducts;
 
-    const filterParam = searchParams.get('filter');
-    if (filterParam === 'new') result = result.filter((p) => p.tags.includes('newArrival'));
-    if (filterParam === 'bestseller') result = result.filter((p) => p.tags.includes('bestSeller'));
+    const filterParam = searchParams.get("filter");
+    if (filterParam === "new")
+      result = result.filter((p) => p.tags.includes("newArrival"));
+    if (filterParam === "bestseller")
+      result = result.filter((p) => p.tags.includes("bestSeller"));
 
-    if (category !== 'all') result = result.filter((p) => p.category === category);
+    if (category !== "all")
+      result = result.filter((p) => p.category === category);
     if (search.trim()) {
       const term = search.trim().toLowerCase();
       result = result.filter((p) => p.name.toLowerCase().includes(term));
@@ -46,15 +51,22 @@ function Shop() {
     result = result.filter((p) => p.price <= maxPrice);
 
     const sorted = [...result];
-    if (sortBy === 'price-asc') sorted.sort((a, b) => a.price - b.price);
-    if (sortBy === 'price-desc') sorted.sort((a, b) => b.price - a.price);
-    if (sortBy === 'name-asc') sorted.sort((a, b) => a.name.localeCompare(b.name));
+    if (sortBy === "price-asc") sorted.sort((a, b) => a.price - b.price);
+    if (sortBy === "price-desc") sorted.sort((a, b) => b.price - a.price);
+    if (sortBy === "name-asc")
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
 
     return sorted;
   }, [allProducts, category, search, maxPrice, sortBy, searchParams]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-  const pageProducts = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PAGE_SIZE)
+  );
+  const pageProducts = filteredProducts.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
 
   // Reset to page 1 whenever a filter changes, so a stale page number
   // doesn't leave the user looking at an empty grid.
@@ -64,7 +76,7 @@ function Shop() {
 
   function handleCategoryChange(value) {
     setCategory(value);
-    setSearchParams(value === 'all' ? {} : { category: value });
+    setSearchParams(value === "all" ? {} : { category: value });
   }
 
   return (
@@ -98,7 +110,9 @@ function Shop() {
             >
               <option value="all">All Categories</option>
               {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
             </select>
           </div>
@@ -118,7 +132,11 @@ function Shop() {
 
           <div className="filter-group">
             <label htmlFor="shop-sort">Sort By</label>
-            <select id="shop-sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <select
+              id="shop-sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
               <option value="featured">Featured</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
@@ -137,13 +155,19 @@ function Shop() {
             </div>
           ) : (
             <>
-              <p className="shop-result-count">{filteredProducts.length} products</p>
+              <p className="shop-result-count">
+                {filteredProducts.length} products
+              </p>
               <div className="product-grid">
                 {pageProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
             </>
           )}
         </div>
