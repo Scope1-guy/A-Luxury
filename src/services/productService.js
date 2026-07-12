@@ -15,23 +15,41 @@
 //   searchProducts(term)    -> products(query: term)
 //   getRelatedProducts()    -> products in the same collection/tags
 
-import products from '../data/products';
+import products from "../data/products";
+import { shopifyFetch } from "../graphql/client";
+import { PRODUCT_QUERY, PRODUCTS_QUERY } from "../graphql/queries/products";
 
 // Simulates network latency so loading states can be built and tested
 // the same way they will need to work once real API calls are in place.
 const FAKE_DELAY_MS = 250;
 
 function delay(value) {
-  return new Promise((resolve) => setTimeout(() => resolve(value), FAKE_DELAY_MS));
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(value), FAKE_DELAY_MS)
+  );
 }
 
-export function getAllProducts() {
-  return delay(products);
+// export function getAllProducts() {
+//   return delay(products);
+// }
+
+export async function getAllProducts() {
+  const data = await shopifyFetch(PRODUCTS_QUERY);
+
+  return data.products.nodes;
 }
 
-export function getProductById(id) {
-  const product = products.find((p) => p.id === id) || null;
-  return delay(product);
+// export function getProductById(id) {
+//   const product = products.find((p) => p.id === id) || null;
+//   return delay(product);
+// }
+
+export async function getProductById(handle) {
+  const data = await shopifyFetch(PRODUCT_QUERY, {
+    handle,
+  });
+
+  return data.product;
 }
 
 export function getProductsByCategory(categoryId) {
@@ -40,15 +58,15 @@ export function getProductsByCategory(categoryId) {
 }
 
 export function getFeaturedProducts() {
-  return delay(products.filter((p) => p.tags.includes('featured')));
+  return delay(products.filter((p) => p.tags.includes("featured")));
 }
 
 export function getNewArrivals() {
-  return delay(products.filter((p) => p.tags.includes('newArrival')));
+  return delay(products.filter((p) => p.tags.includes("newArrival")));
 }
 
 export function getBestSellers() {
-  return delay(products.filter((p) => p.tags.includes('bestSeller')));
+  return delay(products.filter((p) => p.tags.includes("bestSeller")));
 }
 
 export function searchProducts(term) {

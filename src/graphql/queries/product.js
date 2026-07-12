@@ -1,4 +1,4 @@
-export const PRODUCTS_QUERY = `
+export const PRODUCT_QUERY = `
     query GetProduct($handle: String!) {
         product(handle: $handle) {
             id

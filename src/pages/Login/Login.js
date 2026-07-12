@@ -74,7 +74,7 @@ function Login() {
         <p className="form-note">
           Don't have an account? <Link to="/register">Register</Link>
         </p>
-        <p className="form-note">Demo login: alex@example.com / password123</p>
+        {/* <p className="form-note">Demo login: alex@example.com / password123</p> */}
       </div>
     </div>
   );
