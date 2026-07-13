@@ -15,7 +15,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 function ProductDetails() {
   // useParams reads the dynamic segment from the route path "/product/:id".
-  const { id } = useParams();
+  // const { id } = useParams();
+  const { handle } = useParams();
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
 
@@ -35,7 +36,7 @@ function ProductDetails() {
   // items to another product re-fetches and resets the page correctly.
   useEffect(() => {
     setJustAdded(false);
-    getProductById(id).then((data) => {
+    getProductById(handle).then((data) => {
       setProduct(data);
       if (data) {
         setSize(data.sizes[0]);
@@ -45,7 +46,7 @@ function ProductDetails() {
       }
       getRelatedProducts(data).then(setRelated);
     });
-  }, [id]);
+  }, [handle]);
 
   if (!product) {
     return (

@@ -79,6 +79,8 @@ function Shop() {
     setSearchParams(value === "all" ? {} : { category: value });
   }
 
+  console.log("SHOP PAGE PRODUCTS:", pageProducts);
+
   return (
     <div className="container shop-page section">
       <div className="section-head">

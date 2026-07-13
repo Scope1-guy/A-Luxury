@@ -17,7 +17,7 @@
 
 import products from "../data/products";
 import { shopifyFetch } from "../graphql/client";
-import { PRODUCT_QUERY, PRODUCTS_QUERY } from "../graphql/queries/products";
+import { PRODUCTS_QUERY, PRODUCT_QUERY } from "../graphql/queries/products";
 
 // Simulates network latency so loading states can be built and tested
 // the same way they will need to work once real API calls are in place.
@@ -29,6 +29,53 @@ function delay(value) {
   );
 }
 
+function normalizeProduct(product) {
+  if (!p) return null;
+  return {
+    id: product.id,
+    name: product.title,
+    handle: product.handle,
+    image: product.images.nodes.map((img) => img.url),
+    description: product.description,
+    price: parseFloat(product.priceRange.minVariantPrice.amount),
+    compareAtPrice: product.compareAtPriceRange?.maxVariantPrice?.amount
+      ? parseFloat(product.compareAtPriceRange.maxVariantPrice.amount)
+      : null,
+    sizes:
+      product.options.find((option) => option.name === "size")?.values || [],
+    colors:
+      product.options.find((option) => option.name === "color")?.values || [],
+    // variants: product.variants.nodes,
+    // stock: product.variants.nodes.length,
+    stock: 99,
+  };
+}
+
+// function formatSingleProduct(product) {
+//   if (!product) return null;
+
+//   return {
+//     id: product.id,
+//     name: product.title,
+//     handle: product.handle,
+//     description: product.description,
+//     images: product.images.nodes.map((img) => img.url),
+//     category: product.collections?.nodes[0]?.title || "Uncategorized",
+//     price: Number(product.priceRange.minVariantPrice.amount),
+//     compareAtPrice: Number(
+//       product.compareAtPriceRange?.maxVariantPrice?.amount || 0
+//     ),
+//     sizes:
+//       product.options.find((option) => option.name.toLowerCase() === "size")
+//         ?.values || [],
+//     colors:
+//       product.options.find((option) => option.name.toLowerCase() === "color")
+//         ?.values || [],
+//     variants: product.variants.nodes,
+//     stock: product.variants.nodes.length,
+//   };
+// }
+
 // export function getAllProducts() {
 //   return delay(products);
 // }
@@ -36,7 +83,9 @@ function delay(value) {
 export async function getAllProducts() {
   const data = await shopifyFetch(PRODUCTS_QUERY);
 
-  return data.products.nodes;
+  console.log("RAW SHOPIFY PRODUCTS:", data.products.nodes);
+
+  return data.products.nodes.map(formatProduct);
 }
 
 // export function getProductById(id) {
@@ -49,7 +98,12 @@ export async function getProductById(handle) {
     handle,
   });
 
-  return data.product;
+  console.log("SHOPIFY SINGLE PRODUCT:", data);
+  if (!data.product) {
+    return null;
+  }
+
+  return normalizeProduct(data.product);
 }
 
 export function getProductsByCategory(categoryId) {

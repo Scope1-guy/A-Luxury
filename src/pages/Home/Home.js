@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Hero from '../../components/Hero/Hero';
-import CategoryGrid from '../../components/CategoryGrid/CategoryGrid';
-import PromoBanner from '../../components/PromoBanner/PromoBanner';
-import Testimonials from '../../components/Testimonials/Testimonials';
-import Newsletter from '../../components/Newsletter/Newsletter';
-import ProductCard from '../../components/ProductCard/ProductCard';
-import categories from '../../data/categories';
-import { getFeaturedProducts, getNewArrivals, getBestSellers } from '../../services/productService';
-import './Home.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Hero from "../../components/Hero/Hero";
+import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
+import PromoBanner from "../../components/PromoBanner/PromoBanner";
+import Testimonials from "../../components/Testimonials/Testimonials";
+import Newsletter from "../../components/Newsletter/Newsletter";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import categories from "../../data/categories";
+import {
+  getFeaturedProducts,
+  getNewArrivals,
+  getBestSellers,
+} from "../../services/productService";
+import "./Home.css";
+
+import { getAllProducts } from "../../services/productService";
 
 // A small reusable block for the three "row of products" sections below,
 // so Featured/New Arrivals/Best Sellers don't repeat the same JSX three times.
@@ -21,7 +27,9 @@ function ProductRow({ eyebrow, title, viewAllHref, products }) {
             <span className="eyebrow">{eyebrow}</span>
             <h2>{title}</h2>
           </div>
-          <Link to={viewAllHref} className="btn btn-ghost">View All</Link>
+          <Link to={viewAllHref} className="btn btn-ghost">
+            View All
+          </Link>
         </div>
         <div className="product-grid">
           {products.map((product) => (
@@ -34,6 +42,16 @@ function ProductRow({ eyebrow, title, viewAllHref, products }) {
 }
 
 function Home() {
+  useEffect(() => {
+    async function testShopify() {
+      const products = await getAllProducts();
+
+      console.log("SHOPIFY PRODUCTS:", products);
+    }
+
+    testShopify();
+  }, []);
+
   const [featured, setFeatured] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
@@ -64,7 +82,9 @@ function Home() {
               <span className="eyebrow">Shop by category</span>
               <h2>Categories</h2>
             </div>
-            <Link to="/categories" className="btn btn-ghost">View All</Link>
+            <Link to="/categories" className="btn btn-ghost">
+              View All
+            </Link>
           </div>
           <CategoryGrid categories={categories.slice(0, 3)} />
         </div>
