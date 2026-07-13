@@ -7,7 +7,7 @@ import './Cart.css';
 const SHIPPING_FLAT_RATE = 12;
 
 function Cart() {
-  const { items, increaseQuantity, decreaseQuantity, removeFromCart, clearCart, subtotal } = useCart();
+  const { items, increaseQuantity, decreaseQuantity, removeFromCart, clearCart, checkout, loading, subtotal } = useCart();
 
   if (items.length === 0) {
     return (
@@ -38,12 +38,12 @@ function Cart() {
         <ul className="cart-lines">
           {items.map((item) => (
             <li key={item.key} className="cart-line">
-              <Link to={`/product/${item.product.id}`} className="cart-line-image">
+              <Link to={`/product/${item.product.handle}`} className="cart-line-image">
                 <img src={item.product.images[0]} alt={item.product.name} />
               </Link>
 
               <div className="cart-line-info">
-                <Link to={`/product/${item.product.id}`}>
+                <Link to={`/product/${item.product.handle}`}>
                   <h3>{item.product.name}</h3>
                 </Link>
                 <p className="cart-line-variant">{item.size} · {item.color}</p>
@@ -86,8 +86,13 @@ function Cart() {
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-          {/* Replace with real Shopify checkout (checkoutCreate + redirect) later. */}
-          <button className="btn btn-primary btn-block">Checkout</button>
+          <button
+            className="btn btn-primary btn-block"
+            onClick={checkout}
+            disabled={loading}
+          >
+            {loading ? "Please wait…" : "Checkout"}
+          </button>
         </aside>
       </div>
     </div>

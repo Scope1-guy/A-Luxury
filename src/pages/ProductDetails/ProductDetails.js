@@ -60,6 +60,22 @@ function ProductDetails() {
   const onSale =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
+  // Shopify's Cart API needs a variant id, not the product id — a "Wool
+  // Overcoat, Size M, Charcoal" is a specific variant with its own id.
+  // We find it by matching the selected size/color against every
+  // variant's selectedOptions (normalized onto each variant in
+  // productService as `variant.options`).
+  function findSelectedVariant() {
+    return product.variants.find((v) => {
+      const sizeMatches = !size || v.options.size === size;
+      const colorMatches = !color || v.options.color === color;
+      return sizeMatches && colorMatches;
+    });
+  }
+
+  const selectedVariant = findSelectedVariant();
+  const canAddToCart = !!selectedVariant && selectedVariant.available;
+
   function handleAddToCart() {
     if (!user) {
       navigate("/login", {
@@ -68,7 +84,18 @@ function ProductDetails() {
       return;
     }
 
-    addToCart(product, { size, color, quantity });
+    if (!selectedVariant) {
+      // Shouldn't normally happen (every combo should map to a variant),
+      // but guards against bad/partial Shopify product data.
+      return;
+    }
+
+    addToCart(product, {
+      size,
+      color,
+      quantity,
+      variantId: selectedVariant.id,
+    });
     setJustAdded(true);
   }
 
@@ -134,8 +161,11 @@ function ProductDetails() {
           <button
             className="btn btn-primary btn-block"
             onClick={handleAddToCart}
+            disabled={!canAddToCart}
           >
-            Add to Cart
+            {selectedVariant && !selectedVariant.available
+              ? "Out of Stock"
+              : "Add to Cart"}
           </button>
           <button
             className={`btn btn-ghost btn-block ${wishlisted ? "active" : ""}`}

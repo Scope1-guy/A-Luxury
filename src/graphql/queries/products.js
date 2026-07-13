@@ -1,10 +1,11 @@
 export const PRODUCTS_QUERY = `
-query GetProducts {
-    products(first:12) {
+query GetProducts($cursor: String) {
+    products(first: 50, after: $cursor) {
         nodes {
             id
             title
             handle
+            tags
 
             featuredImage {
                 url
@@ -18,7 +19,7 @@ query GetProducts {
                 }
             }
 
-            compareAtPriceRange{
+            compareAtPriceRange {
                 maxVariantPrice {
                     amount
                 }
@@ -28,9 +29,13 @@ query GetProducts {
                 nodes {
                     id
                     title
+                    handle
                 }
             }
-
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
         }
     }
 }
@@ -43,8 +48,9 @@ export const PRODUCT_QUERY = `
             title
             handle
             description
+            tags
 
-            images(first: 3) {
+            images(first: 5) {
                 nodes {
                     url
                     altText
@@ -56,7 +62,7 @@ export const PRODUCT_QUERY = `
                 values
             }
 
-            variants(first: 25 {
+            variants(first: 25) {
                 nodes {
                     id
                     title
@@ -91,25 +97,9 @@ export const PRODUCT_QUERY = `
                 nodes {
                     id
                     title
+                    handle
                 }
             }
         }
     }
 `;
-
-// export const PRODUCT_QUERY = `
-// query GetProduct($handle: String!) {
-//     product(handle: $handle) {
-//         id
-//         title
-//         handle
-//         description
-
-//         variants(first: 20) {
-//             nodes {
-//                 id
-//             }
-//         }
-//     }
-// }
-// `;

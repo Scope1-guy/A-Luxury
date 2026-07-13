@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useCart } from './CartContext';
+import { getProductById } from '../services/productService';
 
 const WishlistContext = createContext(null);
 
@@ -23,16 +24,26 @@ export function WishlistProvider({ children }) {
     isWishlisted(product.id) ? removeFromWishlist(product.id) : addToWishlist(product);
   }
 
-  // Moves a product from the wishlist into the cart using a default
-  // size/color (the first available option) since the wishlist itself
-  // doesn't track a chosen variant.
-  function moveToCart(product) {
-    addToCart(product, {
-      size: product.sizes[0],
-      color: product.colors[0],
-      quantity: 1,
-    });
-    removeFromWishlist(product.id);
+  // Wishlist items are the "list" shape (from ProductCard: id, handle,
+  // name, image, price — no sizes/colors/variants). To add to cart we
+  // need a real Shopify variant id, so we re-fetch the full product
+  // detail first, then pick its first available size/color combo.
+  async function moveToCart(product) {
+    const detail = await getProductById(product.handle);
+    if (!detail) return;
+
+    const size = detail.sizes[0];
+    const color = detail.colors[0];
+    const variant = detail.variants.find(
+      (v) =>
+        (!size || v.options.size === size) &&
+        (!color || v.options.color === color)
+    );
+
+    if (variant) {
+      addToCart(detail, { size, color, quantity: 1, variantId: variant.id });
+      removeFromWishlist(product.id);
+    }
   }
 
   const value = {

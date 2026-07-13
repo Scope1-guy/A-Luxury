@@ -14,8 +14,6 @@ import {
 } from "../../services/productService";
 import "./Home.css";
 
-import { getAllProducts } from "../../services/productService";
-
 // A small reusable block for the three "row of products" sections below,
 // so Featured/New Arrivals/Best Sellers don't repeat the same JSX three times.
 function ProductRow({ eyebrow, title, viewAllHref, products }) {
@@ -42,16 +40,6 @@ function ProductRow({ eyebrow, title, viewAllHref, products }) {
 }
 
 function Home() {
-  useEffect(() => {
-    async function testShopify() {
-      const products = await getAllProducts();
-
-      console.log("SHOPIFY PRODUCTS:", products);
-    }
-
-    testShopify();
-  }, []);
-
   const [featured, setFeatured] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);

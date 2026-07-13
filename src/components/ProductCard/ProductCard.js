@@ -12,8 +12,6 @@ function ProductCard({ product }) {
   const onSale =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
-  console.log("PRODUCTCARD:", product);
-
   return (
     <div className="product-card">
       <div className="product-card-media">
