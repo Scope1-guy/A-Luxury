@@ -21,6 +21,7 @@ const CART_FIELDS = `
         ... on ProductVariant {
           id
           title
+          price { amount currencyCode}
           selectedOptions { name value }
           product {
             title

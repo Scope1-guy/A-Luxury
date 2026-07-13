@@ -33,9 +33,10 @@ function normalizeListProduct(node) {
     name: node.title,
     image: node.featuredImage?.url || null,
     price: parseFloat(node.priceRange.minVariantPrice.amount),
-    compareAtPrice: node.compareAtPriceRange?.maxVariantPrice?.amount
-      ? parseFloat(node.compareAtPriceRange.maxVariantPrice.amount)
-      : null,
+    compareAtPrice:
+      parseFloat(node.compareAtPriceRange?.maxVariantPrice?.amount || 0) > 0
+        ? parseFloat(node.compareAtPriceRange.maxVariantPrice.amount)
+        : null,
     category: resolveCategory(node.collections?.nodes),
     tags: (node.tags || []).map((t) => t.toLowerCase()),
   };
@@ -53,9 +54,13 @@ function normalizeDetailProduct(product) {
     description: product.description,
     images: product.images.nodes.map((img) => img.url),
     price: parseFloat(product.priceRange.minVariantPrice.amount),
-    compareAtPrice: product.compareAtPriceRange?.maxVariantPrice?.amount
-      ? parseFloat(product.compareAtPriceRange.maxVariantPrice.amount)
-      : null,
+    // compareAtPrice: product.compareAtPriceRange?.maxVariantPrice?.amount
+    //   ? parseFloat(product.compareAtPriceRange.maxVariantPrice.amount)
+    //   : null,
+    compareAtPrice:
+      parseFloat(product.compareAtPriceRange?.maxVariantPrice?.amount || 0) > 0
+        ? parseFloat(product.compareAtPriceRange.maxVariantPrice.amount)
+        : null,
     category: resolveCategory(product.collections?.nodes),
     tags: (product.tags || []).map((t) => t.toLowerCase()),
     sizes:

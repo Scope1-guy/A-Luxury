@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as cartService from "../services/cartService";
 
 const CartContext = createContext(null);
@@ -16,9 +22,7 @@ const CART_ID_KEY = "shopify_cart_id";
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]); // [{ key, product, size, color, quantity, variantId, shopifyLineId }]
-  const [cartId, setCartId] = useState(() =>
-    localStorage.getItem(CART_ID_KEY)
-  );
+  const [cartId, setCartId] = useState(() => localStorage.getItem(CART_ID_KEY));
   const [checkoutUrl, setCheckoutUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -80,7 +84,7 @@ export function CartProvider({ children }) {
             handle: variant.product.handle,
             name: variant.product.title,
             images: [],
-            price: 0,
+            price: parseFloat(variant.price.amount),
           },
         };
       });
@@ -192,6 +196,7 @@ export function CartProvider({ children }) {
   function checkout() {
     if (checkoutUrl) {
       window.location.href = checkoutUrl;
+      // console.log(checkoutUrl);
     }
   }
 
