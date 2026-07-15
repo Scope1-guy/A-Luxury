@@ -10,8 +10,8 @@ function Footer() {
       <div className="container footer-inner">
         <div className="footer-brand">
           <Link to="/" className="logo">
-            {/* <span className="fold-mark" aria-hidden="true"></span> */}A
-            LUXURY
+            {/* <span className="fold-mark" aria-hidden="true"></span> */}
+            A-LUXURY
           </Link>
           <p>Considered clothing, made to last.</p>
         </div>
@@ -54,7 +54,7 @@ function Footer() {
       </div>
 
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} A LUXURY. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} A-LUXURY. All rights reserved.</span>
       </div>
     </footer>
   );

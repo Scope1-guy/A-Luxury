@@ -8,7 +8,7 @@ function Hero() {
       <div className="container hero-inner">
         <div className="hero-copy">
           <span className="eyebrow">Autumn / Winter</span>
-          <h1>Clothes built around the A LUXURY, not the trend.</h1>
+          <h1>Clothes built around the A-LUXURY, not the trend.</h1>
           <p className="hero-sub">
             Natural fabrics, considered cuts, and construction meant to outlast
             the season it was bought in.

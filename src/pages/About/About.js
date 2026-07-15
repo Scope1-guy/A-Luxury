@@ -9,7 +9,7 @@ function About() {
           <span className="eyebrow">Our Story</span>
           <h1>Clothes are meant to be lived in.</h1>
           <p className="about-lede">
-            A LUXURY started with a simple frustration: most clothing is
+            A-LUXURY started with a simple frustration: most clothing is
             designed to look good on a hanger and fall apart after a year of
             wear. We build the opposite — pieces cut from natural fibers,
             finished by hand, and tested for the long haul before they ever
@@ -30,7 +30,7 @@ function About() {
           <div>
             <h3>Made to repair</h3>
             <p>
-              Every A LUXURY garment is built with reinforced seams and spare
+              Every A-LUXURY garment is built with reinforced seams and spare
               buttons, because repair should always beat replacement.
             </p>
           </div>

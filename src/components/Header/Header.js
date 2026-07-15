@@ -25,7 +25,7 @@ function Header() {
           <span className="fold-mark" aria-hidden="true">
             <img src="/IMG-20260704-WA0028.jpg" alt="a-luxury-logo" />
           </span>
-          A LUXURY
+          A-LUXURY
         </Link>
 
         {/* NavLink (rather than Link) automatically adds an "active" class
