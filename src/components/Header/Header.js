@@ -47,7 +47,7 @@ function Header() {
         </nav>
 
         <div className="header-actions">
-          <Link to="/wishlist" className="icon-link" aria-label="Wishlist">
+          <Link to="/wishlist" className="icon-link-wish" aria-label="Wishlist">
             Wishlist
             {wishlistItems.length > 0 && (
               <span className="count-badge">{wishlistItems.length}</span>

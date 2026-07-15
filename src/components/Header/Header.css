@@ -119,4 +119,7 @@
 }
 
 @media (max-width: 500px) {
+  .icon-link-wish {
+    display: none;
+  }
 }

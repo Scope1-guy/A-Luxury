@@ -28,6 +28,9 @@ function Footer() {
             <li>
               <Link to="/shop?filter=new">New Arrivals</Link>
             </li>
+            <li>
+              <Link to="/wishlist">Wishlist</Link>
+            </li>
           </ul>
         </div>
 
