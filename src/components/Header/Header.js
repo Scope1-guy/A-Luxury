@@ -22,7 +22,10 @@ function Header() {
     <header className="header">
       <div className="container header-inner">
         <Link to="/" className="logo" onClick={() => setMenuOpen(false)}>
-          {/* <span className="fold-mark" aria-hidden="true"></span> */}A LUXURY
+          <span className="fold-mark" aria-hidden="true">
+            <img src="/IMG-20260704-WA0028.jpg" alt="a-luxury-logo" />
+          </span>
+          A LUXURY
         </Link>
 
         {/* NavLink (rather than Link) automatically adds an "active" class

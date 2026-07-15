@@ -190,11 +190,11 @@ textarea:focus-visible {
 
 .fold-mark {
   position: relative;
-  width: 1em;
-  height: 1em;
+  width: 2em;
+  height: 2em;
   display: inline-block;
-  background: var(--color-accent);
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  /* background: var(--color-accent); */
+  /* clip-path: polygon(0 0, 100% 0, 100% 100%); */
 }
 
 /* --- Forms ---------------------------------------------------------------
