@@ -26,11 +26,13 @@ function Profile() {
 
       <div className="profile-card">
         <div className="profile-row">
-          <span>Name</span>
-          <strong>
-            {user.firstName} {user.lastName}
-          </strong>
-        </div>
+  <span>Name</span>
+  <strong>
+    {user.firstName || user.lastName
+      ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+      : "Not provided yet"}
+  </strong>
+</div>
         <div className="profile-row">
           <span>Email</span>
           <strong>{user.email}</strong>
