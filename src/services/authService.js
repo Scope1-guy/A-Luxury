@@ -14,7 +14,6 @@ import { generateRandomString, generateCodeChallenge } from "../utils/pkce";
 const SHOP_DOMAIN = process.env.REACT_APP_SHOPIFY_STORE_DOMAIN;
 const CLIENT_ID = process.env.REACT_APP_SHOPIFY_CUSTOMER_CLIENT_ID;
 const REDIRECT_URI = process.env.REACT_APP_SHOPIFY_CUSTOMER_REDIRECT_URI;
-const CUSTOMER_API_VERSION = "2025-10";
 
 const SESSION_KEY = "shopify_customer_session";
 const PKCE_KEY = "shopify_customer_pkce";
