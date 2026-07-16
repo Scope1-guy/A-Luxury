@@ -98,27 +98,32 @@ export async function handleCallback(searchParams) {
 }
 
 async function fetchCustomer(accessToken) {
-  const res = await fetch(
-    `https://${SHOP_DOMAIN}/customer/api/${CUSTOMER_API_VERSION}/graphql`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: accessToken,
-      },
-      body: JSON.stringify({
-        query: `
-          query CustomerDetails {
-            customer {
-              firstName
-              lastName
-              emailAddress { emailAddress }
-            }
-          }
-        `,
-      }),
-    }
+  // Ask Shopify for the correct GraphQL endpoint instead of guessing a
+  // version number — this is Shopify's documented way to avoid hardcoding
+  // API versions that can become outdated.
+  const discoveryRes = await fetch(
+    `https://${SHOP_DOMAIN}/.well-known/customer-account-api`
   );
+  const { graphql_api } = await discoveryRes.json();
+
+  const res = await fetch(graphql_api, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
+    },
+    body: JSON.stringify({
+      query: `
+        query CustomerDetails {
+          customer {
+            firstName
+            lastName
+            emailAddress { emailAddress }
+          }
+        }
+      `,
+    }),
+  });
   const { data } = await res.json();
   return {
     firstName: data.customer.firstName,
