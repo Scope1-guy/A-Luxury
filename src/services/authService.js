@@ -1,13 +1,4 @@
 // Auth service — real Shopify Customer Account API (OAuth 2.0 + PKCE).
-//
-// Login isn't a single function call anymore — it's a redirect out to
-// Shopify's own hosted login page and back. This file is split into:
-// startLogin() (kicks off the redirect), handleCallback() (finishes it
-// when Shopify sends the user back), plus getCurrentUser() and logout().
-//
-// Shopify's hosted login page has BOTH "sign in" and "create account" on
-// it — there's no separate register flow to build. Login.js and
-// Register.js both just call startLogin().
 
 import { generateRandomString, generateCodeChallenge } from "../utils/pkce";
 
@@ -23,6 +14,19 @@ async function getDiscoveryDocument() {
     `https://${SHOP_DOMAIN}/.well-known/openid-configuration`
   );
   return res.json();
+}
+
+async function getGraphqlEndpoint() {
+  const res = await fetch(
+    `https://${SHOP_DOMAIN}/.well-known/customer-account-api`
+  );
+  const { graphql_api } = await res.json();
+  return graphql_api;
+}
+
+function getSession() {
+  const raw = sessionStorage.getItem(SESSION_KEY);
+  return raw ? JSON.parse(raw) : null;
 }
 
 export async function startLogin() {
@@ -97,15 +101,9 @@ export async function handleCallback(searchParams) {
 }
 
 async function fetchCustomer(accessToken) {
-  // Ask Shopify for the correct GraphQL endpoint instead of guessing a
-  // version number — this is Shopify's documented way to avoid hardcoding
-  // API versions that can become outdated.
-  const discoveryRes = await fetch(
-    `https://${SHOP_DOMAIN}/.well-known/customer-account-api`
-  );
-  const { graphql_api } = await discoveryRes.json();
+  const graphqlEndpoint = await getGraphqlEndpoint();
 
-  const res = await fetch(graphql_api, {
+  const res = await fetch(graphqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -131,10 +129,57 @@ async function fetchCustomer(accessToken) {
   };
 }
 
+export async function updateCustomerName(firstName, lastName) {
+  const session = getSession();
+  if (!session) throw new Error("You need to be logged in to do this.");
+
+  const graphqlEndpoint = await getGraphqlEndpoint();
+
+  const res = await fetch(graphqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.accessToken,
+    },
+    body: JSON.stringify({
+      query: `
+        mutation UpdateCustomerName($input: CustomerUpdateInput!) {
+          customerUpdate(input: $input) {
+            customer {
+              firstName
+              lastName
+            }
+            userErrors { field message }
+          }
+        }
+      `,
+      variables: { input: { firstName, lastName } },
+    }),
+  });
+
+  const { data } = await res.json();
+  const userErrors = data.customerUpdate.userErrors;
+  if (userErrors && userErrors.length > 0) {
+    throw new Error(userErrors.map((e) => e.message).join(", "));
+  }
+
+  const updatedUser = {
+    ...session.user,
+    firstName: data.customerUpdate.customer.firstName,
+    lastName: data.customerUpdate.customer.lastName,
+  };
+
+  sessionStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({ ...session, user: updatedUser })
+  );
+
+  return updatedUser;
+}
+
 export function getCurrentUser() {
-  const raw = sessionStorage.getItem(SESSION_KEY);
-  if (!raw) return null;
-  const session = JSON.parse(raw);
+  const session = getSession();
+  if (!session) return null;
   if (Date.now() > session.expiresAt) {
     sessionStorage.removeItem(SESSION_KEY);
     return null;
@@ -143,8 +188,8 @@ export function getCurrentUser() {
 }
 
 export async function logout() {
-  const raw = sessionStorage.getItem(SESSION_KEY);
-  const idToken = raw ? JSON.parse(raw).idToken : null;
+  const session = getSession();
+  const idToken = session ? session.idToken : null;
   sessionStorage.removeItem(SESSION_KEY);
 
   try {
@@ -158,6 +203,7 @@ export async function logout() {
     console.error("Failed to reach Shopify's logout endpoint:", err);
   }
 }
+ 
 
 // // Auth service.
 // //
