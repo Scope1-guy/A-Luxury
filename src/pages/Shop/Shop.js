@@ -7,7 +7,7 @@ import { getAllProducts } from "../../services/productService";
 import "./Shop.css";
 
 const PAGE_SIZE = 8;
-const PRICE_MAX = 350;
+const PRICE_MAX = 100350;
 
 function Shop() {
   // useSearchParams reads/writes the URL's query string (e.g. ?category=knitwear),
@@ -118,13 +118,13 @@ function Shop() {
           </div>
 
           <div className="filter-group">
-            <label htmlFor="shop-price">Max Price: ${maxPrice}</label>
+            <label htmlFor="shop-price">Max Price: ₦{maxPrice}</label>
             <input
               id="shop-price"
               type="range"
-              min="20"
+              min="1020"
               max={PRICE_MAX}
-              step="10"
+              step="10000"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
             />
