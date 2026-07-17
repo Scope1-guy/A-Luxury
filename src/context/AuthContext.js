@@ -85,6 +85,15 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  async function updateName(firstName, lastName) {
+    const updatedUser = await authService.updateCustomerName(
+      firstName,
+      lastName
+    );
+    setUser(updatedUser);
+    return updatedUser;
+  }
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -92,6 +101,7 @@ export function AuthProvider({ children }) {
     login,
     completeLogin,
     logout,
+    updateName,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
