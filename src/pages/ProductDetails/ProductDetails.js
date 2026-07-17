@@ -126,9 +126,9 @@ function ProductDetails() {
         <h1>{product.name}</h1>
         <p className="pd-price">
           {onSale && (
-            <span className="price-strike">${product.compareAtPrice}</span>
+            <span className="price-strike">₦{product.compareAtPrice}</span>
           )}
-          <span className="price">${product.price}</span>
+          <span className="price">₦{product.price}</span>
         </p>
         <p className="pd-description">{product.description}</p>
 
