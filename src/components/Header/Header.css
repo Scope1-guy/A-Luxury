@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: space-between;
   height: 76px;
-  gap: 21px;
+  gap: 20px;
 }
 
 .logo {
@@ -27,7 +27,7 @@
 
 .main-nav {
   display: flex;
-  gap: 28px;
+  gap: 26px;
   flex: 1;
   justify-content: center;
 }
@@ -50,7 +50,7 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 15px;
   flex-shrink: 0;
 }
 
