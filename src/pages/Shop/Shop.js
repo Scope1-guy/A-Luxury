@@ -4,15 +4,16 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from "../../components/Pagination/Pagination";
 import categories from "../../data/categories";
 import { getAllProducts } from "../../services/productService";
+import { useCurrency } from "../../context/CurrencyContext";
+import { formatMoney } from "../../utils/formatMoney";
 import "./Shop.css";
 
 const PAGE_SIZE = 8;
 const PRICE_MAX = 100350;
 
 function Shop() {
-  // useSearchParams reads/writes the URL's query string (e.g. ?category=knitwear),
-  // so filters are shareable/bookmarkable links rather than component-only state.
   const [searchParams, setSearchParams] = useSearchParams();
+  const { country } = useCurrency();
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,23 +25,26 @@ function Shop() {
   const [sortBy, setSortBy] = useState("featured");
   const [page, setPage] = useState(1);
 
+  // Re-runs whenever `country` changes, so switching currency re-fetches
+  // with fresh prices.
   useEffect(() => {
-    getAllProducts().then((data) => {
+    setLoading(true);
+    getAllProducts(country).then((data) => {
       setAllProducts(data);
       setLoading(false);
     });
-  }, []);
+  }, [country]);
 
-  // Recompute the visible list whenever any filter/sort control changes.
-  // useMemo avoids re-filtering on unrelated re-renders.
   const filteredProducts = useMemo(() => {
     let result = allProducts;
 
     const filterParam = searchParams.get("filter");
+    // productService lowercases every tag, so these checks must be
+    // lowercase too, or they'll never match.
     if (filterParam === "new")
-      result = result.filter((p) => p.tags.includes("newArrival"));
+      result = result.filter((p) => p.tags.includes("newarrival"));
     if (filterParam === "bestseller")
-      result = result.filter((p) => p.tags.includes("bestSeller"));
+      result = result.filter((p) => p.tags.includes("bestseller"));
 
     if (category !== "all")
       result = result.filter((p) => p.category === category);
@@ -68,8 +72,6 @@ function Shop() {
     page * PAGE_SIZE
   );
 
-  // Reset to page 1 whenever a filter changes, so a stale page number
-  // doesn't leave the user looking at an empty grid.
   useEffect(() => {
     setPage(1);
   }, [category, search, maxPrice, sortBy]);
@@ -78,6 +80,12 @@ function Shop() {
     setCategory(value);
     setSearchParams(value === "all" ? {} : { category: value });
   }
+
+  // The price slider works in raw numbers regardless of currency, but its
+  // label should still show the right symbol — borrow the currency code
+  // off whatever product happens to be loaded, since Shopify only sends
+  // currencyCode alongside an actual product, not as a standalone value.
+  const displayCurrency = allProducts[0]?.currencyCode || "CAD";
 
   return (
     <div className="container shop-page section">
@@ -118,7 +126,9 @@ function Shop() {
           </div>
 
           <div className="filter-group">
-            <label htmlFor="shop-price">Max Price: ₦{maxPrice}</label>
+            <label htmlFor="shop-price">
+              Max Price: {formatMoney(maxPrice, displayCurrency)}
+            </label>
             <input
               id="shop-price"
               type="range"
