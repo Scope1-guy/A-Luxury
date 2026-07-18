@@ -42,10 +42,40 @@ function Header() {
               {link.label}
             </NavLink>
           ))}
+
+          {/* Only visible inside the mobile dropdown (hidden on desktop via
+              CSS) — Wishlist and Profile/Login move here on small screens
+              so the top bar can stay short. */}
+          <div className="mobile-extra-links">
+            <Link
+              to="/wishlist"
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              Wishlist
+              {wishlistItems.length > 0 && (
+                <span className="count-badge">{wishlistItems.length}</span>
+              )}
+            </Link>
+            <Link
+              to={isAuthenticated ? "/profile" : "/login"}
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              {isAuthenticated ? "Profile" : "Login"}
+            </Link>
+          </div>
         </nav>
 
         <div className="header-actions">
           <CurrencySelector />
+
+          {/* Mobile-only quick link — hidden on desktop via CSS, since
+              "Shop" is already reachable there through the main nav. */}
+          <Link to="/shop" className="icon-link shop-quicklink">
+            Shop
+          </Link>
+
           <Link to="/wishlist" className="icon-link-wish" aria-label="Wishlist">
             Wishlist
             {wishlistItems.length > 0 && (
@@ -58,7 +88,7 @@ function Header() {
           </Link>
           <Link
             to={isAuthenticated ? "/profile" : "/login"}
-            className="icon-link"
+            className="icon-link-account"
           >
             {isAuthenticated ? "Profile" : "Login"}
           </Link>
