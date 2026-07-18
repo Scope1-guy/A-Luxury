@@ -10,6 +10,7 @@ import {
   CART_LINES_ADD_MUTATION,
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
+  CART_BUYER_IDENTITY_UPDATE_MUTATION,
   CART_QUERY,
 } from "../graphql/queries/cart";
 
@@ -20,8 +21,11 @@ function throwOnUserErrors(userErrors) {
 }
 
 // lines: [{ merchandiseId, quantity }]
-export async function createCart(lines) {
-  const data = await shopifyFetch(CART_CREATE_MUTATION, { lines });
+export async function createCart(lines, countryCode) {
+  const data = await shopifyFetch(CART_CREATE_MUTATION, {
+    lines,
+    countryCode,
+  });
   throwOnUserErrors(data.cartCreate.userErrors);
   return data.cartCreate.cart;
 }
@@ -49,6 +53,18 @@ export async function removeCartLines(cartId, lineIds) {
   });
   throwOnUserErrors(data.cartLinesRemove.userErrors);
   return data.cartLinesRemove.cart;
+}
+
+// Re-prices the whole cart (and regenerates checkoutUrl) for a new
+// country — called by CartContext when the user switches currency after
+// already having items in their cart.
+export async function updateBuyerIdentity(cartId, countryCode) {
+  const data = await shopifyFetch(CART_BUYER_IDENTITY_UPDATE_MUTATION, {
+    cartId,
+    countryCode,
+  });
+  throwOnUserErrors(data.cartBuyerIdentityUpdate.userErrors);
+  return data.cartBuyerIdentityUpdate.cart;
 }
 
 export async function getCart(cartId) {
