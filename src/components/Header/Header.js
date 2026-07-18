@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { useAuth } from "../../context/AuthContext";
+import CurrencySelector from "../CurrencySelector/CurrencySelector";
 import "./Header.css";
 
 const navLinks = [
@@ -28,9 +29,6 @@ function Header() {
           A-LUXURY
         </Link>
 
-        {/* NavLink (rather than Link) automatically adds an "active" class
-            when its `to` matches the current URL, so we can style the
-            current page without tracking that state ourselves. */}
         <nav className={`main-nav ${menuOpen ? "open" : ""}`}>
           {navLinks.map((link) => (
             <NavLink
@@ -47,6 +45,7 @@ function Header() {
         </nav>
 
         <div className="header-actions">
+          <CurrencySelector />
           <Link to="/wishlist" className="icon-link-wish" aria-label="Wishlist">
             Wishlist
             {wishlistItems.length > 0 && (
