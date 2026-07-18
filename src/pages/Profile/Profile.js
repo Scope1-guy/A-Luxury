@@ -70,7 +70,7 @@ function Profile() {
               onChange={(e) => setFirstName(e.target.value)}
               required
             />
-
+            
             <input
               type="text"
               placeholder="Last name"
