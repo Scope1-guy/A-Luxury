@@ -34,8 +34,24 @@ const CART_FIELDS = `
 `;
 
 export const CART_CREATE_MUTATION = `
-  mutation CartCreate($lines: [CartLineInput!]) {
-    cartCreate(input: { lines: $lines }) {
+  mutation CartCreate($lines: [CartLineInput!], $countryCode: CountryCode) {
+    cartCreate(
+      input: { lines: $lines, buyerIdentity: { countryCode: $countryCode } }
+    ) {
+      cart {
+        ${CART_FIELDS}
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
+export const CART_BUYER_IDENTITY_UPDATE_MUTATION = `
+  mutation CartBuyerIdentityUpdate($cartId: ID!, $countryCode: CountryCode!) {
+    cartBuyerIdentityUpdate(
+      cartId: $cartId
+      buyerIdentity: { countryCode: $countryCode }
+    ) {
       cart {
         ${CART_FIELDS}
       }
