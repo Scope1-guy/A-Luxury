@@ -11,16 +11,17 @@ import {
 } from "../../services/productService";
 import "./ProductDetails.css";
 import { useAuth } from "../../context/AuthContext";
+import { useCurrency } from "../../context/CurrencyContext";
+import { formatMoney } from "../../utils/formatMoney";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function ProductDetails() {
-  // useParams reads the dynamic segment from the route path "/product/:id".
-  // const { id } = useParams();
   const { handle } = useParams();
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
 
   const { user } = useAuth();
+  const { country } = useCurrency();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,11 +33,11 @@ function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Re-run whenever `id` changes, so navigating from one product's related
-  // items to another product re-fetches and resets the page correctly.
+  // Re-runs whenever `handle` changes (new product) OR `country` changes
+  // (user switched currency) — both should re-fetch with fresh prices.
   useEffect(() => {
     setJustAdded(false);
-    getProductById(handle).then((data) => {
+    getProductById(handle, country).then((data) => {
       setProduct(data);
       if (data) {
         setSize(data.sizes[0]);
@@ -44,9 +45,9 @@ function ProductDetails() {
         setActiveImage(0);
         setQuantity(1);
       }
-      getRelatedProducts(data).then(setRelated);
+      getRelatedProducts(data, 4, country).then(setRelated);
     });
-  }, [handle]);
+  }, [handle, country]);
 
   if (!product) {
     return (
@@ -60,11 +61,6 @@ function ProductDetails() {
   const onSale =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
-  // Shopify's Cart API needs a variant id, not the product id — a "Wool
-  // Overcoat, Size M, Charcoal" is a specific variant with its own id.
-  // We find it by matching the selected size/color against every
-  // variant's selectedOptions (normalized onto each variant in
-  // productService as `variant.options`).
   function findSelectedVariant() {
     return product.variants.find((v) => {
       const sizeMatches = !size || v.options.size === size;
@@ -85,8 +81,6 @@ function ProductDetails() {
     }
 
     if (!selectedVariant) {
-      // Shouldn't normally happen (every combo should map to a variant),
-      // but guards against bad/partial Shopify product data.
       return;
     }
 
@@ -126,9 +120,13 @@ function ProductDetails() {
         <h1>{product.name}</h1>
         <p className="pd-price">
           {onSale && (
-            <span className="price-strike">₦{product.compareAtPrice}</span>
+            <span className="price-strike">
+              {formatMoney(product.compareAtPrice, product.currencyCode)}
+            </span>
           )}
-          <span className="price">₦{product.price}</span>
+          <span className="price">
+            {formatMoney(product.price, product.currencyCode)}
+          </span>
         </p>
         <p className="pd-description">{product.description}</p>
 
