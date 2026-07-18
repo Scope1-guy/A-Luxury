@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import QuantitySelector from '../../components/QuantitySelector/QuantitySelector';
 import { useCart } from '../../context/CartContext';
+import { formatMoney } from '../../utils/formatMoney';
 import './Cart.css';
 
 const SHIPPING_FLAT_RATE = 12;
@@ -21,6 +22,7 @@ function Cart() {
     );
   }
 
+  const currencyCode = items[0]?.product.currencyCode || 'CAD';
   const shipping = SHIPPING_FLAT_RATE;
   const total = subtotal + shipping;
 
@@ -47,7 +49,7 @@ function Cart() {
                   <h3>{item.product.name}</h3>
                 </Link>
                 <p className="cart-line-variant">{item.size} · {item.color}</p>
-                <p className="price">₦{item.product.price}</p>
+                <p className="price">{formatMoney(item.product.price, item.product.currencyCode)}</p>
               </div>
 
               <QuantitySelector
@@ -58,7 +60,7 @@ function Cart() {
               />
 
               <p className="cart-line-total price">
-                ₦;{(item.product.price * item.quantity).toFixed(2)}
+                {formatMoney(item.product.price * item.quantity, item.product.currencyCode)}
               </p>
 
               <button
@@ -76,15 +78,15 @@ function Cart() {
           <h2>Order Summary</h2>
           <div className="cart-summary-row">
             <span>Subtotal</span>
-            <span>₦{subtotal.toFixed(2)}</span>
+            <span>{formatMoney(subtotal, currencyCode)}</span>
           </div>
           <div className="cart-summary-row">
             <span>Shipping</span>
-            <span>₦{shipping.toFixed(2)}</span>
+            <span>{formatMoney(shipping, currencyCode)}</span>
           </div>
           <div className="cart-summary-row cart-summary-total">
             <span>Total</span>
-            <span>₦{total.toFixed(2)}</span>
+            <span>{formatMoney(total, currencyCode)}</span>
           </div>
           <button
             className="btn btn-primary btn-block"
