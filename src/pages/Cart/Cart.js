@@ -47,7 +47,7 @@ function Cart() {
                   <h3>{item.product.name}</h3>
                 </Link>
                 <p className="cart-line-variant">{item.size} · {item.color}</p>
-                <p className="price">${item.product.price}</p>
+                <p className="price">₦{item.product.price}</p>
               </div>
 
               <QuantitySelector
@@ -58,7 +58,7 @@ function Cart() {
               />
 
               <p className="cart-line-total price">
-                ${(item.product.price * item.quantity).toFixed(2)}
+                ₦;{(item.product.price * item.quantity).toFixed(2)}
               </p>
 
               <button
@@ -76,15 +76,15 @@ function Cart() {
           <h2>Order Summary</h2>
           <div className="cart-summary-row">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>₦{subtotal.toFixed(2)}</span>
           </div>
           <div className="cart-summary-row">
             <span>Shipping</span>
-            <span>${shipping.toFixed(2)}</span>
+            <span>₦{shipping.toFixed(2)}</span>
           </div>
           <div className="cart-summary-row cart-summary-total">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>₦{total.toFixed(2)}</span>
           </div>
           <button
             className="btn btn-primary btn-block"

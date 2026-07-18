@@ -37,9 +37,9 @@ function ProductCard({ product }) {
         <h3>{product.name}</h3>
         <p className="product-card-price">
           {onSale && (
-            <span className="price-strike">${product.compareAtPrice}</span>
+            <span className="price-strike">₦{product.compareAtPrice}</span>
           )}
-          <span className="price">${product.price}</span>
+          <span className="price">₦{product.price}</span>
         </p>
       </Link>
     </div>
