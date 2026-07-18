@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useCart } from './CartContext';
+import { useCurrency } from './CurrencyContext';
 import { getProductById } from '../services/productService';
 
 const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
-  const [items, setItems] = useState([]); // array of product objects
+  const [items, setItems] = useState([]);
   const { addToCart } = useCart();
+  const { country } = useCurrency();
 
   function isWishlisted(productId) {
     return items.some((p) => p.id === productId);
@@ -24,12 +26,8 @@ export function WishlistProvider({ children }) {
     isWishlisted(product.id) ? removeFromWishlist(product.id) : addToWishlist(product);
   }
 
-  // Wishlist items are the "list" shape (from ProductCard: id, handle,
-  // name, image, price — no sizes/colors/variants). To add to cart we
-  // need a real Shopify variant id, so we re-fetch the full product
-  // detail first, then pick its first available size/color combo.
   async function moveToCart(product) {
-    const detail = await getProductById(product.handle);
+    const detail = await getProductById(product.handle, country);
     if (!detail) return;
 
     const size = detail.sizes[0];
