@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
+import { CurrencyProvider } from "./context/CurrencyContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -25,44 +26,47 @@ import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
 import NotFound from "./pages/NotFound/NotFound";
 
-// Provider order matters here only in that WishlistProvider calls useCart()
-// internally (to support "move to cart"), so CartProvider must wrap it.
-// AuthProvider doesn't depend on the other two, so its position is flexible.
+// Provider order matters here: CartProvider and WishlistProvider both call
+// useCurrency() internally now (to fetch/checkout in the selected
+// currency), so CurrencyProvider must wrap both of them. WishlistProvider
+// also calls useCart() internally, so CartProvider must wrap it too.
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
       <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <Header />
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/product/:handle" element={<ProductDetails />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <Footer />
-          </WishlistProvider>
-        </CartProvider>
+        <CurrencyProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <Header />
+              <main>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/product/:handle" element={<ProductDetails />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <Footer />
+            </WishlistProvider>
+          </CartProvider>
+        </CurrencyProvider>
       </AuthProvider>
     </BrowserRouter>
   );
