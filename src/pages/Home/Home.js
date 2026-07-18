@@ -12,10 +12,9 @@ import {
   getNewArrivals,
   getBestSellers,
 } from "../../services/productService";
+import { useCurrency } from "../../context/CurrencyContext";
 import "./Home.css";
 
-// A small reusable block for the three "row of products" sections below,
-// so Featured/New Arrivals/Best Sellers don't repeat the same JSX three times.
 function ProductRow({ eyebrow, title, viewAllHref, products }) {
   return (
     <section className="section product-row">
@@ -40,17 +39,18 @@ function ProductRow({ eyebrow, title, viewAllHref, products }) {
 }
 
 function Home() {
+  const { country } = useCurrency();
   const [featured, setFeatured] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
 
-  // useEffect with an empty dependency array runs once, right after the
-  // first render — the right place to kick off data fetching for a page.
+  // Re-runs whenever `country` changes too, so switching currency updates
+  // the prices shown in these rows.
   useEffect(() => {
-    getFeaturedProducts().then(setFeatured);
-    getNewArrivals().then(setNewArrivals);
-    getBestSellers().then(setBestSellers);
-  }, []);
+    getFeaturedProducts(country).then(setFeatured);
+    getNewArrivals(country).then(setNewArrivals);
+    getBestSellers(country).then(setBestSellers);
+  }, [country]);
 
   return (
     <div>
