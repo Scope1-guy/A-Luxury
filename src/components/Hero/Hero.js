@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Hero.css";
+import heroImage from "../../assets/images/WhatsApp Image 2026-07-16 at 12.46.18 PM.jpeg";
 
 function Hero() {
   return (
@@ -23,10 +24,7 @@ function Hero() {
           </div>
         </div>
         <div className="hero-media">
-          <img
-            src="https://picsum.photos/seed/fold-hero/1000/1200"
-            alt="Model wearing the A LUXURY wool overcoat"
-          />
+          <img src={heroImage} alt="A-luxury armless top" />
         </div>
       </div>
     </section>
