@@ -1,34 +1,24 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import * as cartService from "../services/cartService";
+import { useCurrency } from "./CurrencyContext";
 
 const CartContext = createContext(null);
 
-// A cart line is uniquely identified by product id + size + color, since
-// the same product in two different sizes needs to be two separate lines.
 function lineKey(productId, size, color) {
   return `${productId}__${size}__${color}`;
 }
 
-// Shopify carts persist for ~10 weeks server-side, so we remember the
-// cart id across page reloads/tab closes rather than starting a new
-// cart every visit.
 const CART_ID_KEY = "shopify_cart_id";
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]); // [{ key, product, size, color, quantity, variantId, shopifyLineId }]
-  const [cartId, setCartId] = useState(() => localStorage.getItem(CART_ID_KEY));
+  const { country } = useCurrency();
+  const [items, setItems] = useState([]);
+  const [cartId, setCartId] = useState(() =>
+    localStorage.getItem(CART_ID_KEY)
+  );
   const [checkoutUrl, setCheckoutUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // On first load, if we have a remembered cart id, pull the live cart
-  // from Shopify so a refresh doesn't lose what's in the bag. If the cart
-  // has expired or was completed, Shopify returns null and we start clean.
   useEffect(() => {
     async function restoreCart() {
       if (!cartId) return;
@@ -48,9 +38,6 @@ export function CartProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Takes whatever Shopify hands back after any mutation and rebuilds our
-  // local `items` list from it, so local state never drifts from what
-  // Shopify actually has.
   function syncFromShopifyCart(cart) {
     setCartId(cart.id);
     setCheckoutUrl(cart.checkoutUrl);
@@ -66,9 +53,6 @@ export function CartProvider({ children }) {
           (o) => o.name.toLowerCase() === "color"
         )?.value;
 
-        // Try to keep the richer local `product` object (images, price,
-        // description, etc. — Shopify's cart response only gives us the
-        // variant/product title) if we already had this line locally.
         const existing = prevItems.find(
           (item) => item.shopifyLineId === line.id
         );
@@ -80,16 +64,46 @@ export function CartProvider({ children }) {
           quantity: line.quantity,
           size,
           color,
-          product: existing?.product || {
+          product: {
             handle: variant.product.handle,
             name: variant.product.title,
             images: [],
+            ...existing?.product,
             price: parseFloat(variant.price.amount),
+            currencyCode: variant.price.currencyCode,
           },
         };
       });
     });
   }
+
+  const didMount = React.useRef(false);
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    if (!cartId) return;
+    let cancelled = false;
+
+    async function reprice() {
+      setLoading(true);
+      try {
+        const cart = await cartService.updateBuyerIdentity(cartId, country);
+        if (!cancelled) syncFromShopifyCart(cart);
+      } catch (err) {
+        console.error("Failed to reprice cart for new country:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    reprice();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [country]);
 
   async function addToCart(product, { size, color, quantity = 1, variantId }) {
     if (!variantId) {
@@ -101,12 +115,11 @@ export function CartProvider({ children }) {
     try {
       let cart;
       if (!cartId) {
-        cart = await cartService.createCart([
-          { merchandiseId: variantId, quantity },
-        ]);
+        cart = await cartService.createCart(
+          [{ merchandiseId: variantId, quantity }],
+          country
+        );
       } else {
-        // If this exact variant is already a line in the cart, Shopify
-        // merges quantities automatically on cartLinesAdd.
         cart = await cartService.addCartLines(cartId, [
           { merchandiseId: variantId, quantity },
         ]);
@@ -114,8 +127,6 @@ export function CartProvider({ children }) {
 
       syncFromShopifyCart(cart);
 
-      // Attach the full local product (images, description, etc.) to the
-      // line we just touched, since Shopify's response doesn't include it.
       setItems((prev) =>
         prev.map((item) =>
           item.variantId === variantId ? { ...item, product } : item
@@ -190,17 +201,12 @@ export function CartProvider({ children }) {
     }
   }
 
-  // Sends the user to Shopify's hosted checkout page. This is the entire
-  // "handle payment" step — Shopify collects address/shipping/payment on
-  // its own page, then returns the user to your storefront afterward.
   function checkout() {
     if (checkoutUrl) {
       window.location.href = checkoutUrl;
-      // console.log(checkoutUrl);
     }
   }
 
-  // useMemo avoids recalculating totals on every render — only when items change.
   const { subtotal, itemCount } = useMemo(() => {
     const subtotal = items.reduce(
       (sum, item) => sum + item.product.price * item.quantity,
