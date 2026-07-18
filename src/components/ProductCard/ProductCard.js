@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
+import { formatMoney } from "../../utils/formatMoney";
 import "./ProductCard.css";
 
-// A single product card, reused on Home, Shop, Categories, and the
-// "related products" section of Product Details. Keeping it as one
-// component means a style change here updates the whole site.
 function ProductCard({ product }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
@@ -21,9 +19,6 @@ function ProductCard({ product }) {
         <span className="fold-mark card-corner" aria-hidden="true"></span>
         {onSale && <span className="badge badge-sale card-badge">Sale</span>}
 
-        {/* stopPropagation isn't needed here since this button isn't nested
-            inside the Link, but toggleWishlist itself is a good example of
-            a context action a beginner component can call directly. */}
         <button
           className={`wishlist-toggle ${wishlisted ? "active" : ""}`}
           onClick={() => toggleWishlist(product)}
@@ -37,9 +32,13 @@ function ProductCard({ product }) {
         <h3>{product.name}</h3>
         <p className="product-card-price">
           {onSale && (
-            <span className="price-strike">₦{product.compareAtPrice}</span>
+            <span className="price-strike">
+              {formatMoney(product.compareAtPrice, product.currencyCode)}
+            </span>
           )}
-          <span className="price">₦{product.price}</span>
+          <span className="price">
+            {formatMoney(product.price, product.currencyCode)}
+          </span>
         </p>
       </Link>
     </div>
