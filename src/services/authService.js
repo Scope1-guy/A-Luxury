@@ -177,6 +177,71 @@ export async function updateCustomerName(firstName, lastName) {
   return updatedUser;
 }
 
+export async function getOrders(first = 10) {
+  const session = getSession();
+  if (!session) throw new Error("You need to be logged in to view orders.");
+
+  const graphqlEndpoint = await getGraphqlEndpoint();
+
+  const res = await fetch(graphqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.accessToken,
+    },
+    body: JSON.stringify({
+      query: `
+        query CustomerOrders($first: Int!) {
+          customer {
+            orders(first: $first) {
+              nodes {
+                id
+                name
+                processedAt
+                financialStatus
+                fulfillmentStatus
+                statusPageUrl
+                totalPrice { amount currencyCode }
+                lineItems(first: 5) {
+                  nodes {
+                    title
+                    quantity
+                    image { url altText }
+                    totalPrice { amount currencyCode }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: { first },
+    }),
+  });
+
+  const { data, errors } = await res.json();
+  if (errors && errors.length > 0) {
+    throw new Error(errors.map((e) => e.message).join(", "));
+  }
+
+  return data.customer.orders.nodes.map((order) => ({
+    id: order.id,
+    name: order.name,
+    processedAt: order.processedAt,
+    financialStatus: order.financialStatus,
+    fulfillmentStatus: order.fulfillmentStatus,
+    statusPageUrl: order.statusPageUrl,
+    totalPrice: parseFloat(order.totalPrice.amount),
+    currencyCode: order.totalPrice.currencyCode,
+    lineItems: order.lineItems.nodes.map((li) => ({
+      title: li.title,
+      quantity: li.quantity,
+      image: li.image?.url || null,
+      totalPrice: parseFloat(li.totalPrice?.amount || 0),
+    })),
+  }));
+}
+
 export function getCurrentUser() {
   const session = getSession();
   if (!session) return null;
@@ -203,7 +268,6 @@ export async function logout() {
     console.error("Failed to reach Shopify's logout endpoint:", err);
   }
 }
- 
 
 // // Auth service.
 // //

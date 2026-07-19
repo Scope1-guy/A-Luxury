@@ -25,7 +25,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
 import NotFound from "./pages/NotFound/NotFound";
-
+import Orders from "./pages/Orders/Orders";
 // Provider order matters here: CartProvider and WishlistProvider both call
 // useCurrency() internally now (to fetch/checkout in the selected
 // currency), so CurrencyProvider must wrap both of them. WishlistProvider
@@ -57,6 +57,14 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/orders"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
                       </ProtectedRoute>
                     }
                   />

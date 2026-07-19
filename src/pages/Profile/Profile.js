@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "./Profile.css";
+import { Link } from "react-router-dom";
 
 function Profile() {
   const { user, logout, updateName } = useAuth();
@@ -70,7 +71,7 @@ function Profile() {
               onChange={(e) => setFirstName(e.target.value)}
               required
             />
-            
+
             <input
               type="text"
               placeholder="Last name"
@@ -85,6 +86,10 @@ function Profile() {
           </button>
         </form>
       )}
+
+      <Link to="/orders" className="btn btn-ghost">
+        View Order History
+      </Link>
     </div>
   );
 }
