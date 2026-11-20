@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+# A-LUXURY — WhatsApp ordering storefront
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React + Vite storefront. No accounts, no Shopify. Customers browse, fill a cart,
+and tap **Order via WhatsApp**, which opens a chat with the order already written.
+Products are managed by the client in a Google Sheet.
 
-## Available Scripts
+## Run locally
 
-In the project directory, you can run:
+```bash
+npm install
+cp .env.example .env     # then fill in the values
+npm run dev
+```
 
-### `npm start`
+With `VITE_SHEET_CSV_URL` left empty, the site shows built-in sample products.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Environment variables
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Name | What it is |
+| --- | --- |
+| `VITE_WHATSAPP_NUMBER` | Country code + number, digits only. Example: `14165551234` |
+| `VITE_SHEET_CSV_URL` | The Google Sheet's "Publish to web" CSV link |
+| `VITE_CURRENCY` | Currency code for prices (default `CAD`) |
 
-### `npm test`
+On Netlify, add the same three under **Site configuration > Environment variables**,
+then trigger a redeploy (Vite bakes these in at build time).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Set up the product sheet
 
-### `npm run build`
+1. Create a Google Sheet and import `docs/sample-products.csv` (File > Import > Upload),
+   or copy its column headers exactly.
+2. **File > Share > Publish to web**, choose the product tab and **Comma-separated values (.csv)**, then Publish.
+3. Copy the link into `VITE_SHEET_CSV_URL`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Columns:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Column | Notes |
+| --- | --- |
+| `id` | Short unique name used in the page link, e.g. `wool-overcoat`. Blank = made from the name |
+| `name` | Required |
+| `category` | Type it freely; new categories appear on the site automatically |
+| `price` | Required. Number only |
+| `compare_at_price` | Optional. Old price, shows a Sale badge when higher than `price` |
+| `description` | Optional |
+| `images` | Image links separated by `\|`, a space, or a new line. First one is the main image |
+| `sizes` | Comma separated, e.g. `S, M, L` |
+| `colors` | Comma separated |
+| `stock` | Number left. `0` = Out of Stock. Blank = always available |
+| `tags` | `featured`, `newArrival`, `bestSeller` (controls the Home page rows) |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Edits in the sheet can take about 5 minutes to appear on the site (Google's cache).
 
-### `npm run eject`
+## Product images
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+A sheet can't hold pictures, only links. Upload photos to Cloudinary (free plan),
+copy each image link, and paste it in the `images` column.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deploy (Netlify)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+`netlify.toml` is included (build: `npm run build`, publish folder: `dist`).
+If the site was created for the old CRA version, check the publish directory
+is `dist` and not `build`.

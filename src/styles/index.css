@@ -198,7 +198,7 @@ textarea:focus-visible {
 }
 
 /* --- Forms ---------------------------------------------------------------
-   Shared field styling reused by Login, Register, Contact, Profile. */
+   Shared field styling reused by Contact and the Cart order form. */
 
 .field {
   margin-bottom: 20px;
@@ -282,4 +282,15 @@ textarea:focus-visible {
 
 .empty-state h2 {
   margin-bottom: 8px;
+}
+
+/* --- WhatsApp button -----------------------------------------------------
+   Used for "Order via WhatsApp" (cart) and "Send on WhatsApp" (contact). */
+
+.btn-whatsapp {
+  background: #1fa855;
+  color: var(--color-white);
+}
+.btn-whatsapp:hover {
+  background: #17803f;
 }
