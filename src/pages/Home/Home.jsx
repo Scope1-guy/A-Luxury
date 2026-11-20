@@ -42,12 +42,12 @@ function Home() {
     <div>
       <Hero />
 
-      <ProductRow
+      {/* <ProductRow
         eyebrow="Editor's pick"
         title="Featured Collection"
         viewAllHref="/shop"
         products={withTag("featured")}
-      />
+      /> */}
 
       {categories.length > 0 && (
         <section className="section section-alt">
