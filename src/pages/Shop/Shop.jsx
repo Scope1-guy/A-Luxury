@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Pagination from "../../components/Pagination/Pagination";
 import { useProducts } from "../../context/ProductsContext";
-import { formatMoney } from "../../utils/formatMoney";
+// import { formatMoney } from "../../utils/formatMoney";
 import "./Shop.css";
 
 const PAGE_SIZE = 8;
@@ -16,7 +16,7 @@ function Shop() {
   const [category, setCategory] = useState(
     searchParams.get("category") || "all"
   );
-  const [maxPrice, setMaxPrice] = useState(null); // null = "no limit yet"
+  // const [maxPrice, setMaxPrice] = useState(null); // null = "no limit yet"
   const [sortBy, setSortBy] = useState("featured");
   const [page, setPage] = useState(1);
 
@@ -28,13 +28,13 @@ function Shop() {
   }, [categoryParam]);
 
   // The price slider's top end is the most expensive product in the catalog.
-  const priceCeiling = useMemo(
-    () => Math.ceil(products.reduce((max, p) => Math.max(max, p.price), 0)),
-    [products]
-  );
-  const activeMax =
-    maxPrice === null ? priceCeiling : Math.min(maxPrice, priceCeiling);
-  const priceStep = Math.max(1, Math.round(priceCeiling / 50));
+  // const priceCeiling = useMemo(
+  //   () => Math.ceil(products.reduce((max, p) => Math.max(max, p.price), 0)),
+  //   [products]
+  // );
+  // const activeMax =
+  //   maxPrice === null ? priceCeiling : Math.min(maxPrice, priceCeiling);
+  // const priceStep = Math.max(1, Math.round(priceCeiling / 50));
 
   const filteredProducts = useMemo(() => {
     let result = products;
@@ -51,7 +51,7 @@ function Shop() {
       const term = search.trim().toLowerCase();
       result = result.filter((p) => p.name.toLowerCase().includes(term));
     }
-    result = result.filter((p) => p.price <= activeMax);
+    // result = result.filter((p) => p.price <= activeMax);
 
     const sorted = [...result];
     if (sortBy === "price-asc") sorted.sort((a, b) => a.price - b.price);
@@ -60,7 +60,7 @@ function Shop() {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
 
     return sorted;
-  }, [products, category, search, activeMax, sortBy, searchParams]);
+  }, [products, category, search, sortBy, searchParams]);
 
   const totalPages = Math.max(
     1,
@@ -73,7 +73,7 @@ function Shop() {
 
   useEffect(() => {
     setPage(1);
-  }, [category, search, activeMax, sortBy]);
+  }, [category, search, sortBy]);
 
   function handleCategoryChange(value) {
     setCategory(value);
@@ -118,7 +118,7 @@ function Shop() {
             </select>
           </div>
 
-          <div className="filter-group">
+          {/* <div className="filter-group">
             <label htmlFor="shop-price">
               Max Price: {formatMoney(activeMax)}
             </label>
@@ -132,7 +132,7 @@ function Shop() {
               disabled={priceCeiling === 0}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
             />
-          </div>
+          </div> */}
 
           {/* <div className="filter-group">
             <label htmlFor="shop-sort">Sort By</label>
